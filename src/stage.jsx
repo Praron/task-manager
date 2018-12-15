@@ -1,6 +1,8 @@
 import React from 'react';
 import './stage.css';
 import Button from './button.jsx';
+import store, {moveTask} from './store';
+
 
 const Stage = ({stage, index}) => (
     <div className='stage'>
@@ -10,7 +12,7 @@ const Stage = ({stage, index}) => (
         <div className='task-list'>
             {stage.tasks.map((task, i) => <span key={task + String(i)}>{task}</span>)}
         </div>
-        <Button text='Перевести верхнюю задачу на следующую стадию' onClick={() => stage.moveTask(index)}/>
+        <Button text='Перевести верхнюю задачу на следующую стадию' onClick={() => store.dispatch(moveTask(index))}/>
     </div>
 )
 

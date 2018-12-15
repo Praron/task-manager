@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import './App.css';
 import Header from './header.jsx';
 import Button from './button.jsx';
 import Stages from './stages.jsx';
+import {Provider} from 'react-redux';
+import './App.css';
+import store, {addStage, addTask, moveTask} from './store.jsx';
 
 class App extends Component {
     constructor(props) {
@@ -18,37 +20,31 @@ class App extends Component {
 
     render() {
         return (
-            <div className='App'>
-                <Header/>
-                <Stages stages={this.state.stages}/>
-                <div className='buttons'>
-                    <Button text='Добавить стадию' onClick={this.addStage}/>
-                    <Button text='Добавить задачу' onClick={this.addTask}/>
+            <Provider store={store}>
+                <div className='App'>
+                    <Header/>
+                    <Stages stages={this.state.stages}/>
+                    <div className='buttons'>
+                        <Button text='Добавить стадию' onClick={this.addStage}/>
+                        <Button text='Добавить задачу' onClick={this.addTask}/>
+                    </div>
                 </div>
-            </div>
+            </Provider>
         );
     }
 
     addStage() {
         const title = prompt('Введите название стадии');
-        const stage = {title: title, tasks: [], moveTask: this.moveTask};
-        this.setState({stages: this.state.stages.concat(stage)});
+        store.dispatch(addStage(title));
     }
 
     addTask() {
         const task = prompt('Введите название задачи');
-        const stage = this.state.stages[0];
-        stage.tasks.push(task);
-        this.setState({stages: [stage, ...this.state.stages.slice(1)]});
+        store.dispatch(addTask(task));
     }
 
     moveTask(stagePosition) {
-        const stages = this.state.stages.slice();
-        const task = stages[stagePosition].tasks.shift();
-        if ((stagePosition + 1) < stages.length) {
-            stages[stagePosition + 1].tasks.push(task);
-        }
-        this.setState({stages: stages})
+        store.dispatch(moveTask(stagePosition));
     }
 }
 
